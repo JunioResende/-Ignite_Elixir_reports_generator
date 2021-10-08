@@ -2,7 +2,11 @@ defmodule ReportsGenerator do
   def build(filename) do
     "reports/#{filename}"
     |>File.stream!()
-    |>Enum.map(&parse_line(&1))
+    |>Enum.reduce(%{}, fn line, report -> report
+      [id, _food_name, price] = parse_line(line)
+      Map.put(report, id, price)
+    end
+    )
   end
 
   defp parse_line(line) do
